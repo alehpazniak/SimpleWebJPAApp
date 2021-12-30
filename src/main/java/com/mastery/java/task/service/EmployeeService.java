@@ -1,8 +1,7 @@
 package com.mastery.java.task.service;
 
+import com.mastery.java.task.dao.EmployeeRepository;
 import com.mastery.java.task.dto.Employee;
-import com.mastery.java.task.dto.EmployeeRepository;
-import com.mastery.java.task.dto.Gender;
 import com.mastery.java.task.exeption.EmployeeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
