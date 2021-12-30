@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class Employee {
     private String lastName;
 
     @NotNull
+    @Min(1)
     private Integer departmentId;
 
     @NotBlank

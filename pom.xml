@@ -21,8 +21,8 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <mapstruct-processor.version>1.4.2.Final</mapstruct-processor.version>
         <reactor-spring.version>1.0.1.RELEASE</reactor-spring.version>
-        <swagger-annotations.version>2.1.6</swagger-annotations.version>
-        <springdoc-openapi-ui.version>1.5.2</springdoc-openapi-ui.version>
+        <swagger-annotations.version>2.1.12</swagger-annotations.version>
+        <springdoc-openapi-ui.version>1.6.3</springdoc-openapi-ui.version>
     </properties>
 
     <dependencies>
