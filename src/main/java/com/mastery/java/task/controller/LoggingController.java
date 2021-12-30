@@ -1,4 +1,4 @@
-package com.mastery.java.task.logging;
+package com.mastery.java.task.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/log")
 public class LoggingController {
 
+    //todo: only for testing
     @GetMapping
     public String log() {
         log.trace("This is a TRACE level message");

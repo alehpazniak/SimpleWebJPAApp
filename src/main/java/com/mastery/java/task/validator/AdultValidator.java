@@ -1,4 +1,4 @@
-package com.mastery.java.task.postProcessor;
+package com.mastery.java.task.validator;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +15,6 @@ public class AdultValidator implements ConstraintValidator<Adult, LocalDate> {
 
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext constraintValidatorContext) {
-
         return value != null && value.isBefore(LocalDate.now().minusYears(18));
     }
 }

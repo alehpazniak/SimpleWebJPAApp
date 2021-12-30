@@ -1,6 +1,6 @@
 package com.mastery.java.task.dto;
 
-import com.mastery.java.task.postProcessor.Adult;
+import com.mastery.java.task.validator.Adult;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
