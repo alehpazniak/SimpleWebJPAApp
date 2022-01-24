@@ -1,29 +1,37 @@
 version: '2'
 
 services:
-  simplewebapp:
-    image: 'simplewebapp'
-    build:
-      context: .
-    container_name: simplewebapp
-    depends_on:
-      - postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    ports:
-      - "8080:8080"
-    networks:
-      - my_net
 
+  activemq:
+    image: webcenter/activemq:5.14.3
+    container_name: activemq-container
+    ports: [ "61616:61616" ]
+    networks: [ app-services ]
+    environment:
+      ACTIVEMQ_REMOVE_DEFAULT_ACCOUNT: "true"
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: password
+      ACTIVEMQ_WRITE_LOGIN: write
+      ACTIVEMQ_WRITE_PASSWORD: password
+      ACTIVEMQ_READ_LOGIN: read
+      ACTIVEMQ_READ_PASSWORD: password
+      ACTIVEMQ_JMX_LOGIN: jmx
+      ACTIVEMQ_JMX_PASSWORD: password
+      ACTIVEMQ_STATIC_TOPICS: static-topic-1;static-topic-2
+      ACTIVEMQ_STATIC_QUEUES: static-queue-1;static-queue-2
+      ACTIVEMQ_ENABLED_SCHEDULER: "true"
+      ACTIVEMQ_MIN_MEMORY: 512
+      ACTIVEMQ_MAX_MEMORY: 2048
 
   postgres:
-    image: 'postgres:13.1-alpine'
-    container_name: postgres
+    image: postgres:13.1-alpine
+    container_name: postgres-container
+    ports: [ "5432:5432" ]
+    networks: [ app-services ]
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  app-services:
+    driver: bridge
