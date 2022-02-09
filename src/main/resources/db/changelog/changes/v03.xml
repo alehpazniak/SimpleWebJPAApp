@@ -9,18 +9,10 @@
             <column name="first_name" value="Vimo"/>
             <column name="last_name" value="Pazniak"/>
             <column name="department_id" value="110"/>
-            <column name="job_title" value="unemployee"/>
+            <column name="job_title" value="Teacher"/>
             <column name="gender" value="FEMALE"/>
             <column name="date_of_birth" value="1998-08-09"/>
         </insert>
-        <rollback>
-            <delete tableName="employees">
-                <where>first_name='Vimo'</where>
-            </delete>
-        </rollback>
-    </changeSet>
-    <changeSet author="Aleh" id="4">
-        <tagDatabase tag="version_1.1"/>
     </changeSet>
 
 </databaseChangeLog>

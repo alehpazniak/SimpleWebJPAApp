@@ -1,11 +1,6 @@
-FROM ubuntu:latest
-
-RUN apt-get update
-RUN apt-get install -y openjdk-11-jdk
-RUN apt-get install -y maven
+FROM maven:3.8.1-openjdk-11-slim
 
 WORKDIR /app
 COPY . /app
 RUN mvn clean install
-
-CMD java -jar /app/target/simplewebapp-0.0.1-SNAPSHOT.jar
+CMD java -jar target/simplewebapp-0.0.1-SNAPSHOT.jar

@@ -2,7 +2,7 @@ package com.mastery.java.task.service;
 
 import com.mastery.java.task.dao.EmployeeRepository;
 import com.mastery.java.task.dto.Employee;
-import com.mastery.java.task.exeption.EmployeeNotFoundException;
+import com.mastery.java.task.exeption.EmployeeServiceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,15 +18,11 @@ public class EmployeeService {
 
     public Employee findById(long id) {
         return employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with id: " + id + " wasn't found"));
+                .orElseThrow(() -> new EmployeeServiceNotFoundException("Employee with id: " + id + " wasn't found"));
     }
 
-    public Page<Employee> findByFirstNameOrLastName(String firstName, String lastName, Pageable pageable) {
-        return employeeRepository.findByFirstNameOrLastName(firstName, lastName, pageable);
-    }
-
-    public Page<Employee> findByFirstNameContainingAndLastNameContaining(String firstName, String lastName, Pageable pageable) {
-        return employeeRepository.findByFirstNameContainingAndLastNameContaining(firstName, lastName, pageable);
+    public Page<Employee> findByFirstNameContainsAndLastNameContains(String firstName, String lastName, Pageable pageable) {
+        return employeeRepository.findByFirstNameIsContainingAndLastNameIsContaining(firstName, lastName, pageable);
     }
 
     public Employee save(Employee employee) {
@@ -34,8 +30,12 @@ public class EmployeeService {
     }
 
     public Employee update(long id, Employee employeeRequest) {
+        if (id != employeeRequest.getEmployeeId()) {
+            throw new IllegalArgumentException();
+        }
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(EmployeeNotFoundException::new);
+                .orElseThrow(() -> new EmployeeServiceNotFoundException(
+                        "Employee with id: " + id + " wasn't found. Updating is not possible"));
         employee.setEmployeeId(id);
         employee.setFirstName(employeeRequest.getFirstName());
         employee.setLastName(employeeRequest.getLastName());
@@ -44,12 +44,11 @@ public class EmployeeService {
         employee.setGender(employeeRequest.getGender());
         employee.setDateOfBirth(employeeRequest.getDateOfBirth());
         employeeRepository.save(employee);
-        log.info("Employee with id - {} has been updated", id);
         return employee;
     }
 
     public void delete(long id) {
         employeeRepository.deleteById(id);
-        log.info("Employee with id - {} has been deleted", id);
+        log.info("OUT: [delete] - Employee with id - {} - has been deleted", id);
     }
 }

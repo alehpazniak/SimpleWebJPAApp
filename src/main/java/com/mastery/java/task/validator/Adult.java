@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Adult {
-    String message() default "Employee must be adult";
+    String message() default "{com.mastery.java.task.validator.Adult.message}";
 
     Class<?>[] groups() default {};
 

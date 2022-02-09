@@ -29,29 +29,28 @@ public class Employee implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
 
-    @NotBlank
-    @Length(min = 3, max = 15)
+    @Length(min = 3, max = 15, message = "The firstname must be between {min} and {max} characters long")
     private String firstName;
 
     @NotBlank
-    @Length(min = 2, max = 15)
+    @Length(min = 2, max = 15, message = "The lastname must be between {min} and {max} characters long")
     private String lastName;
 
-    @NotNull
+    @NotNull(message = "The department id must not be null")
     private Integer departmentId;
 
-    @NotBlank
+    @NotBlank(message = "The job title must not be null")
     private String jobTitle;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Adult
+    @Adult(message = "Employee must be adult")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
 
-    @Email
+    @Email(message = "The Email must have the format of an email address")
     private String email;
 
 }
