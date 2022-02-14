@@ -38,19 +38,20 @@ public class EmployeeController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable @Min(1) long id) {
-        log.info("IN: [getById] - {}", id);
+    public Employee getById(@PathVariable @Min(value = 1, message = "must be at least 1") long id) {
+        log.info("IN: method [getById] - employee with id: {}", id);
         Employee employee = employeeService.findById(id);
-        log.info("OUT: [getById] - {} ", employee);
+        log.info("OUT: method [getById] - has been found {}", employee);
         return employee;
     }
 
+    @Operation(description = "You can search employees by firstName part and lastName part or get all employee")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @Operation(description = "You can search employees by firstName part and lastName part or get all employee")
     @GetMapping
     public Page<Employee> findByFirstNameContainsAndLastNameContains(
             @RequestParam String firstName,
@@ -59,11 +60,12 @@ public class EmployeeController {
             @RequestParam(defaultValue = "10") Integer pageSize,
             @RequestParam(defaultValue = "asc") String sortDirection,
             @RequestParam(defaultValue = "firstName") String sortBy) {
-        log.info("IN: method [findByFirstNameContainsAndLastNameContains] - with firstName {}, lastName {}", firstName, lastName);
+        log.info("IN: method [findByFirstNameContainsAndLastNameContains] - find employee(s) with firstName: '{}', & lastName: '{}'",
+                firstName, lastName);
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
         Page<Employee> employees =
                 employeeService.findByFirstNameContainsAndLastNameContains(firstName, lastName, paging);
-        log.info("OUT: method [findByFirstNameContainsAndLastNameContains] - {}", employees.getContent());
+        log.info("OUT: method [findByFirstNameContainsAndLastNameContains] - find employee(s) in number: '{}'", employees.getTotalElements());
         return employees;
     }
 
@@ -71,13 +73,14 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PostMapping
     public Employee add(@Valid @RequestBody Employee employee) {
-        log.info("IN: [add] - {}", employee);
+        log.info("IN: method [add] - save new: {}", employee);
         Employee saveEmployee = employeeService.save(employee);
-        log.info("OUT: [save] - {}", saveEmployee);
+        log.info("OUT: method [save] - {} has been saved", saveEmployee);
         return saveEmployee;
     }
 
@@ -85,14 +88,15 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PutMapping("/{id}")
-    public Employee update(@PathVariable @Min(1) long id,
+    public Employee update(@PathVariable @Min(value = 1, message = "must be at least 1") long id,
                            @Valid @RequestBody Employee employee) {
-        log.info("IN: [update] - {}, {}", id, employee);
+        log.info("IN: method [update] - with id: '{}', & {}", id, employee);
         Employee updateEmployee = employeeService.update(id, employee);
-        log.info("OUT: [update] - {}", updateEmployee);
+        log.info("OUT: method [update] - the data has been changed to {}", updateEmployee);
         return updateEmployee;
     }
 
@@ -100,12 +104,13 @@ public class EmployeeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Min(1) long id) {
-        log.info("IN: [delete] - {}", id);
+    public void delete(@PathVariable @Min(value = 1, message = "must be at least 1") long id) {
+        log.info("IN: method [delete] - employee with id: '{}'", id);
         employeeService.delete(id);
-        log.info("OUT: [delete] - {}", id);
+        log.info("OUT: method [delete] - employee has been deleted with id: '{}'", id);
     }
 }
