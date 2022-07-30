@@ -1,7 +1,7 @@
 package com.mastery.java.task.exeption;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,29 +24,28 @@ public class ErrorHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(EmployeeServiceNotFoundException.class)
     public Map<String, String> handleEmployeeNotFoundException(EmployeeServiceNotFoundException e) {
-        log.error("Error: ", e);
+        log.error("Not found: ", e);
         Map<String, String> errors = new HashMap<>();
         errors.put("message", e.getMessage());
         return errors;
     }
 
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler({DataAccessException.class, IllegalArgumentException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({NestedRuntimeException.class, IllegalArgumentException.class})
     public Map<String, String> handleDataException(RuntimeException e) {
-        log.error("Error: ", e);
+        log.error("Unexpected error: ", e);
         Map<String, String> errors = new HashMap<>();
-        errors.put("message", "Exception of data access");
+        errors.put("message", "Check entered data");
         return errors;
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Map<String, String> handleArgumentTypeException(MethodArgumentTypeMismatchException ex) {
-        log.error("Error: ", ex);
+        log.error("validation failed: ", ex);
         Map<String, String> error = new HashMap<>();
-        ;
         if (ex.getRequiredType() != null) {
-            error.put("message", ex.getName() + " in request URL should be of type " + ex.getRequiredType().getName());
+            error.put("message", ex.getName() + " in the URL request must be a numeric type");
         } else {
             error.put("message", ex.getName() + " in request URL must not be empty");
         }
@@ -56,7 +55,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException e) {
-        log.error("Error: ", e);
+        log.error("validation failed: ", e);
         return e.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(FieldError::getField, fieldError -> Optional.of(fieldError)
                         .map(FieldError::getDefaultMessage)
@@ -66,8 +65,17 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public Map<String, String> handleConstraintValidationExceptions(ConstraintViolationException e) {
-        log.error("Error: ", e);
+        log.error("validation failed: ", e);
         return e.getConstraintViolations().stream()
-                .collect(Collectors.toMap(p -> p.getPropertyPath().toString(), ConstraintViolation::getMessage));
+                .collect(Collectors.toMap(p -> p.getInvalidValue().toString(), ConstraintViolation::getMessage));
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public Map<String, String> handlerJDBCConnectionException(Exception e) {
+        log.error("Unexpected connection error: ", e);
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Sorry for the inconvenience. Try again later");
+        return errors;
     }
 }

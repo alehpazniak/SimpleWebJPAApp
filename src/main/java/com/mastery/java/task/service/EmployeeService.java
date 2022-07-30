@@ -43,11 +43,14 @@ public class EmployeeService {
         employee.setJobTitle(employeeRequest.getJobTitle());
         employee.setGender(employeeRequest.getGender());
         employee.setDateOfBirth(employeeRequest.getDateOfBirth());
+        employee.setEmail(employeeRequest.getEmail());
         employeeRepository.save(employee);
         return employee;
     }
 
     public void delete(long id) {
+        employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeServiceNotFoundException("Employee with id: " + id + " wasn't found"));
         employeeRepository.deleteById(id);
         log.info("OUT: [delete] - Employee with id - {} - has been deleted", id);
     }

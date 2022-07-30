@@ -38,14 +38,14 @@ public class EmployeeController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @GetMapping("/{id}")
-    public Employee getById(@PathVariable @Min(value = 1, message = "must be at least 1") long id) {
+    public Employee getById(@PathVariable @Min(value = 1, message = "Id must be at least 1") long id) {
         log.info("IN: method [getById] - employee with id: {}", id);
         Employee employee = employeeService.findById(id);
         log.info("OUT: method [getById] - has been found {}", employee);
         return employee;
     }
 
-    @Operation(description = "You can search employees by firstName part and lastName part or get all employee")
+    @Operation(description = "You can search employees by firstName part and lastName part or get all employees")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
@@ -92,7 +92,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @PutMapping("/{id}")
-    public Employee update(@PathVariable @Min(value = 1, message = "must be at least 1") long id,
+    public Employee update(@PathVariable @Min(value = 1, message = "Id must be at least 1") long id,
                            @Valid @RequestBody Employee employee) {
         log.info("IN: method [update] - with id: '{}', & {}", id, employee);
         Employee updateEmployee = employeeService.update(id, employee);
@@ -100,15 +100,14 @@ public class EmployeeController {
         return updateEmployee;
     }
 
-    @Operation(description = "Delete employee")
-    @ApiResponses(value = {
+    @Operation(description = "Delete employee", responses = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable @Min(value = 1, message = "must be at least 1") long id) {
+    public void delete(@PathVariable @Min(value = 1, message = "Id must be at least 1") long id) {
         log.info("IN: method [delete] - employee with id: '{}'", id);
         employeeService.delete(id);
         log.info("OUT: method [delete] - employee has been deleted with id: '{}'", id);
